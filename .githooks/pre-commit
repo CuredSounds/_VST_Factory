@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SANDBOX="$REPO_ROOT/vst_factory_sandbox"
+
+echo "pre-commit: RT guardrail scan"
+python3 "$SANDBOX/tools/scan_rt_violations.py"

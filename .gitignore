@@ -1,0 +1,37 @@
+# Build artifacts
+build/
+cmake-build-*/
+**/build/
+*.o
+*.obj
+*.a
+*.dylib
+*.so
+
+# Plugin binaries in tree
+*.vst3/
+*.component/
+*.app/
+
+# Agent / tool outputs
+compile_errors.json
+**/pluginval-logs/
+.pytest_cache/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.xcuserstate
+*.xcworkspace/
+DerivedData/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts (keep golden refs committed)
+**/test-results.xml

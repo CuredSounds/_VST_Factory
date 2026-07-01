@@ -1,0 +1,16 @@
+preset_file: Gain_Baseline.xml
+description: >
+  Unity gain, bypass off. Silent or NaN output means the gain path broke.
+test_note: 60
+note_velocity: 100
+note_duration_sec: 1.0
+render_tail_sec: 0.5
+sample_rate: 48000
+block_size: 512
+input_rms: 0.25
+assertions:
+  no_nan_or_inf: true
+  min_rms_dbfs: -120
+  max_peak_dbfs: 0.0
+notes: >
+  Effect with no input produces silence — we assert no crash/NaN, not audible output.

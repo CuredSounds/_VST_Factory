@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SANDBOX="$REPO_ROOT/vst_factory_sandbox"
+
+echo "pre-push: build + DSP tests"
+"$SANDBOX/tools/run_build.sh"
+"$SANDBOX/tools/run_dsp_tests.sh"
+"$SANDBOX/tools/run_allocation_gate.sh"
+"$SANDBOX/tools/run_null_tests.sh"

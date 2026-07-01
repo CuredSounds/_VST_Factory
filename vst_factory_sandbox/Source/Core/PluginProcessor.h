@@ -1,6 +1,7 @@
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
+#include "../DSP/EffectModules/GainProcessor/GainProcessor.h"
 
 class VstFactorySandboxAudioProcessor : public juce::AudioProcessor
 {
@@ -32,11 +33,12 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     juce::AudioProcessorValueTreeState& getAPVTS() { return apvts; }
+    const VSTFactory::DSP::GainProcessor& getGainProcessor() const { return gainProcessor; }
 
 private:
     juce::AudioProcessorValueTreeState apvts;
+    VSTFactory::DSP::GainProcessor gainProcessor;
 
-    // Cache atomic parameter values for real-time safe access
     std::atomic<float>* gainParameter = nullptr;
     std::atomic<float>* bypassParameter = nullptr;
 

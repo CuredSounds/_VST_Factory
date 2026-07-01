@@ -1,0 +1,49 @@
+name: Sandbox CI
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "vst_factory_sandbox/**"
+      - ".github/workflows/sandbox-ci.yml"
+  pull_request:
+    paths:
+      - "vst_factory_sandbox/**"
+      - ".github/workflows/sandbox-ci.yml"
+
+jobs:
+  quality-gates:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: vst_factory_sandbox
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install ninja
+          pip3 install -r tools/requirements-test.txt
+
+      - name: Install pluginval
+        run: |
+          PLUGINVAL_VERSION="1.0.3"
+          curl -L "https://github.com/Tracktion/pluginval/releases/download/${PLUGINVAL_VERSION}/pluginval_macOS.zip" -o pluginval.zip
+          unzip -q pluginval.zip
+          chmod +x pluginval
+          sudo mv pluginval /usr/local/bin/pluginval
+
+      - name: Run all quality gates
+        env:
+          CI: "true"
+        run: tools/run_all_gates.sh
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sandbox-test-artifacts
+          path: |
+            vst_factory_sandbox/build/ci/test-results.xml
+            vst_factory_sandbox/build/ci/pluginval-logs/

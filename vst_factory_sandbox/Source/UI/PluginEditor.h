@@ -1,12 +1,12 @@
 #pragma once
 
 #include <juce_gui_extra/juce_gui_extra.h>
-#include "PluginProcessor.h"
+#include "../Core/PluginProcessor.h"
 
 class VstFactorySandboxAudioProcessorEditor : public juce::AudioProcessorEditor
 {
 public:
-    VstFactorySandboxAudioProcessorEditor (VstFactorySandboxAudioProcessor&);
+    explicit VstFactorySandboxAudioProcessorEditor (VstFactorySandboxAudioProcessor&);
     ~VstFactorySandboxAudioProcessorEditor() override;
 
     void paint (juce::Graphics&) override;

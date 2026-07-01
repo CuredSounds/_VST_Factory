@@ -5,8 +5,10 @@ project(vst_factory_sandbox VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Fetch JUCE Framework from GitHub
+option(BUILD_TESTS "Build Catch2 DSP test suite" ON)
+
 include(FetchContent)
+
 FetchContent_Declare(
     juce
     GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
@@ -14,7 +16,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(juce)
 
-# Create the Audio Plugin
+add_library(vst_factory_dsp STATIC
+    Source/DSP/EffectModules/GainProcessor/GainProcessor.cpp
+)
+target_include_directories(vst_factory_dsp PUBLIC Source)
+target_compile_options(vst_factory_dsp PRIVATE -Wall -Wextra -Werror)
+
 juce_add_plugin(vst_factory_sandbox
     PRODUCT_NAME "VST_Factory_Sandbox"
     PLUGIN_NAME "VST_Factory_Sandbox"
@@ -26,23 +33,66 @@ juce_add_plugin(vst_factory_sandbox
     FORMATS VST3 AU Standalone
 )
 
-# Target compile sources
 target_sources(vst_factory_sandbox PRIVATE
-    Source/Core/PluginProcessor.h
     Source/Core/PluginProcessor.cpp
-    Source/Core/PluginEditor.h
-    Source/Core/PluginEditor.cpp
-    Source/Core/Parameters.h
+    Source/UI/PluginEditor.cpp
 )
 
-# Header search paths
-target_include_directories(vst_factory_sandbox PRIVATE
-    Source
+target_include_directories(vst_factory_sandbox PRIVATE Source)
+
+target_compile_definitions(vst_factory_sandbox
+    PUBLIC
+        JUCE_WEB_BROWSER=0
+        JUCE_USE_CURL=0
+        JUCE_VST3_CAN_REPLACE_VST2=0
 )
 
-# Libraries to link
-target_link_libraries(vst_factory_sandbox PRIVATE
-    juce::juce_audio_utils
-    juce::juce_audio_processors
-    juce::juce_gui_extra
+target_link_libraries(vst_factory_sandbox
+    PRIVATE
+        vst_factory_dsp
+        juce::juce_audio_utils
+        juce::juce_audio_processors
+        juce::juce_gui_extra
 )
+
+set_source_files_properties(
+    Source/Core/PluginProcessor.cpp
+    Source/UI/PluginEditor.cpp
+    PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+)
+
+if(BUILD_TESTS)
+    FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.5.4
+    )
+    FetchContent_MakeAvailable(Catch2)
+
+    add_executable(DSP_Tests
+        Tests/DSP_Tests/GainProcessorTests.cpp
+        Tests/DSP_Tests/NullTest.cpp
+        Tests/DSP_Tests/AllocationTest.cpp
+        Tests/Helpers/AllocationCounter.cpp
+    )
+
+    target_include_directories(DSP_Tests PRIVATE Source Tests)
+
+    target_link_libraries(DSP_Tests
+        PRIVATE
+            vst_factory_dsp
+            Catch2::Catch2WithMain
+    )
+
+    set_source_files_properties(
+        Tests/DSP_Tests/GainProcessorTests.cpp
+        Tests/DSP_Tests/NullTest.cpp
+        Tests/DSP_Tests/AllocationTest.cpp
+        Tests/Helpers/AllocationCounter.cpp
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+    )
+
+    include(CTest)
+    include(Catch)
+    catch_discover_tests(DSP_Tests)
+endif()

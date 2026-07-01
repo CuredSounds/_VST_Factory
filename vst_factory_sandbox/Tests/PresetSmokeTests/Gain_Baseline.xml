@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Parameters>
+  <PARAM id="gain" value="0.0"/>
+  <PARAM id="bypass" value="0.0"/>
+</Parameters>
