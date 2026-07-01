@@ -1,0 +1,121 @@
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
+
+# can you review my code and offer improvements? [https://github.com/CuredSounds/_vst_softysn1.git](https://github.com/CuredSounds/_vst_softysn1.git)
+
+Here's a thorough review of your [_vst_softysn1](https://github.com/CuredSounds/_vst_softysn1) repository — a JUCE-based VST synthesizer with an impressively ambitious scope.
+
+***
+
+## Overall Architecture
+
+The project has a solid, well-organized structure with a clear `Source/DSP/` hierarchy separating concerns like `OscillatorModule`, `LfoModule`, `EffectChain`, and `ModulationBus` . The separation of DSP, UI, and Core directories is good practice. However, several `.h`-only "stub" files (e.g., `ChorusModule.h`, `DelayModule.h`, `ReverbModule.h` at 58–68 bytes) appear to be placeholders with no implementation yet . These should either be marked `// TODO` clearly or tracked as open issues.
+
+***
+
+## `WavetableOscillator.cpp` — Key Issues
+
+**`wrapPhase` uses a while-loop instead of `fmod`** :
+
+```cpp
+// Current (slow for large values)
+while (value >= 1.0f) value -= 1.0f;
+while (value < 0.0f)  value += 1.0f;
+
+// Better
+return value - std::floor(value);
+```
+
+Using `std::floor` is branchless and significantly faster in a hot audio path.
+
+**`buildTables` uses `std::pow` in a hot loop** for the folded waveform :
+
+```cpp
+folded += (1.0f / std::pow(n, 1.25f)) * harmonicSample;
+```
+
+`std::pow` is expensive. Since this runs at initialization time it won't kill performance, but precomputing the rolloff coefficient in a lookup table would be cleaner and safer if `buildTables` ever gets called at runtime.
+
+**Duplicate `#include` in `SynthVoice.h`** — `OscillatorModule.h` is included twice :
+
+```cpp
+#include "DSP/OscillatorModule.h"  // line ~13
+#include "DSP/OscillatorModule.h"  // line ~19 — redundant
+```
+
+Remove the duplicate; `#pragma once` prevents a double-parse but it's still messy.
+
+***
+
+## `Lfo.cpp` — Issues \& Improvements
+
+**S\&H (`case 4`) only updates at cycle wrap** . This means the very first sample after `trigger()` plays the stale `heldValue = 0.0f`. Fix by immediately sampling on trigger when shape is S\&H:
+
+```cpp
+case TriggerMode::Retrig:
+    phase = phaseOffset;
+    if (shape == 4) heldValue = random.nextFloat() * 2.0f - 1.0f;
+    break;
+```
+
+**`case 2` saw wave is not bandlimited** :
+
+```cpp
+case 2: output = 2.0f * phase - 1.0f; break; // Saw — aliasing at audio rates
+```
+
+For LFO use (<20 Hz) this is fine, but if the LFO rate can reach audio frequencies (which some synths support), you'll get aliasing. Consider adding a PolyBLEP correction or at minimum clamping the maximum rate.
+
+**`shape` is a raw `int` with no bounds checking** . A stray value would silently fall through the switch's `default: break` and return `output = 0.0f` with no warning. Using a scoped `enum class LfoShape` would enforce correctness at compile time.
+
+***
+
+## `SynthVoice.h` — Structural Concerns
+
+**Four separate `LfoModule` members instead of an array** :
+
+```cpp
+LfoModule lfoModule;
+LfoModule lfo2Module;
+LfoModule lfo3Module;
+LfoModule lfo4Module;
+```
+
+This is inflexible and verbose. Prefer:
+
+```cpp
+std::array<LfoModule, 4> lfoModules;
+```
+
+This makes iteration, serialization, and future extension much easier.
+
+```
+**`isPrepared` flag without thread-safety annotation** . In JUCE, `prepareToPlay` runs on the message thread while `renderNextBlock` runs on the audio thread. Accessing `isPrepared` without `std::atomic<bool>` or a memory fence is a data race. Either use `std::atomic<bool> isPrepared` or assert in `renderNextBlock` only in debug builds.
+```
+
+
+***
+
+## Build / Project Issues
+
+**`cmake-build-debug` directory is committed to the repo** . Build artifacts should not be tracked. Add `cmake-build-*/` to `.gitignore`.
+
+**`compile_commands.json` is committed** . This is a generated file that will be stale for other developers. It belongs in `.gitignore` as well.
+
+**`SaturationModule.pdf` is tracked in the DSP source folder** . Binary documentation files shouldn't live alongside source code — move it to `docs/` or a wiki.
+
+***
+
+## Quick-Win Summary
+
+| Issue | File | Priority |
+| :-- | :-- | :-- |
+| Duplicate `#include` | `SynthVoice.h` | Low |
+| `wrapPhase` while-loop | `WavetableOscillator.cpp` | Medium |
+| 4× LfoModule → `std::array` | `SynthVoice.h` | Medium |
+| `isPrepared` data race | `SynthVoice.h` | High |
+| S\&H stale value on trigger | `Lfo.cpp` | Medium |
+| Build artifacts in git | `.gitignore` | Medium |
+| Stub headers with no impl | `DSP/*.h` | Low (track as issues) |
+
+Would you like me to focus a deeper dive on any specific module — for example the modulation bus architecture, the effect chain, or the granular engine?
+
