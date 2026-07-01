@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/sonic.design/Documents/GitHub/_VST_Factory/vst_factory_sandbox/build/cmake_install.cmake",
+		"/Users/sonic.design/Documents/GitHub/_VST_Factory/vst_factory_sandbox/build/_deps/juce-build/cmake_install.cmake",
+		"/Users/sonic.design/Documents/GitHub/_VST_Factory/vst_factory_sandbox/build/_deps/juce-build/modules/cmake_install.cmake",
+		"/Users/sonic.design/Documents/GitHub/_VST_Factory/vst_factory_sandbox/build/_deps/juce-build/extras/Build/cmake_install.cmake",
+		"/Users/sonic.design/Documents/GitHub/_VST_Factory/vst_factory_sandbox/build/_deps/juce-build/extras/Build/juceaide/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

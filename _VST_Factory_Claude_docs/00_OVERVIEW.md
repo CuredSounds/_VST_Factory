@@ -14,7 +14,7 @@ The core idea of the Factory Model: your output as the developer is no longer th
 | Feedback loops | [`05_HARNESS_AND_AGENT_WORKFLOW.md`](05_HARNESS_AND_AGENT_WORKFLOW.md) (Feedback Loops section) |
 | Guardrails | [`03_GUARDRAILS_AND_RT_SAFETY.md`](03_GUARDRAILS_AND_RT_SAFETY.md) |
 
-Plus a static-context template — [`01_AGENTS_TEMPLATE.md`](01_AGENTS_TEMPLATE.md) — that gets copied as `AGENTS.md`/`CLAUDE.md` into every individual plugin repo, and a build sequence — [`06_ROADMAP.md`](06_ROADMAP.md) — for standing the whole ecosystem up.
+Plus a static-context template — [`01_AGENTS_TEMPLATE.md`](01_AGENTS_TEMPLATE.md) — that gets copied as `AGENTS.md`/`CLAUDE.md` into every individual plugin repo, a build sequence — [`06_ROADMAP.md`](06_ROADMAP.md) — for standing the whole ecosystem up, and a concrete pre-DAW test-automation recipe — [`07_PRESET_SMOKE_TESTING.md`](07_PRESET_SMOKE_TESTING.md) — covering pluginval, baseline-preset smoke tests, and parameter fuzzing.
 
 ## Why this exists now
 
