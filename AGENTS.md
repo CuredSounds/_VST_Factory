@@ -31,8 +31,7 @@ CI run). A checkbox without an artifact is not done. See `04_TESTING_AND_QUALITY
 - **Active work:** `vst_factory_sandbox/` harness and tooling.
 - **Reference only:** `Synth Refrence Build Specs and Docs/`, root `PROJECT_STANDARDS.md`,
   `CHANGELOG.md` (Softsyn1 case study).
-- **Softsyn1 code** lives in external repo `CuredSounds/_vst_softysn1` — not modified until
-  harness is locked.
+- **Softsyn1 code:** [CuredSounds/_vst_softysn1](https://github.com/CuredSounds/_vst_softysn1) — harness on branch `try_vst_factory`
 
 ## Hard rules (all plugins)
 

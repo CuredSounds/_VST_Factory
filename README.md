@@ -47,9 +47,11 @@ _VST_Factory/
 
 ## Reference build
 
-**BC_Softsyn / Softsyn1** (`CuredSounds/_vst_softysn1`) is the external flagship synth that
-informed this factory. Stabilization of Softsyn1 is **deferred** until the harness in
-`vst_factory_sandbox/` is green in CI.
+**BC_Softsyn / Softsyn1** — flagship synth repo:
+[github.com/CuredSounds/_vst_softysn1](https://github.com/CuredSounds/_vst_softysn1)  
+Harness trial branch: [`try_vst_factory`](https://github.com/CuredSounds/_vst_softysn1/tree/try_vst_factory)
+
+Local clone (if present): `../_CLion VST/_0_working_dir/_vst_softysn1`
 
 ## Starting plugin #2
 

@@ -27,12 +27,15 @@ Verification: `vst_factory_sandbox/tools/run_all_gates.sh` (local); CI badge on 
 
 ## Phase 1 — Softsyn1 trial
 
-In progress on `_vst_softysn1` branch `try_vst_factory` (harness ported 2026-07-01).
+Branch: [`try_vst_factory`](https://github.com/CuredSounds/_vst_softysn1/tree/try_vst_factory) on
+[github.com/CuredSounds/_vst_softysn1](https://github.com/CuredSounds/_vst_softysn1)
 
-- [x] Copy harness pattern → Softsyn1 (`AGENTS.md`, tools, CI)
-- [ ] Fix convergent RT-safety findings from 2026-06-29 reviews
-- [ ] Enable strict RT scan + processBlock allocation gate
-- [ ] Reconcile conflicting roadmap documents with verification artifacts
+- [x] Harness ported (`AGENTS.md`, `tools/run_all_gates.sh`, CI workflow)
+- [x] Build + Catch2 pass locally on `try_vst_factory`
+- [ ] Fix convergent RT-safety findings (2026-06-29 reviews)
+- [ ] Enable strict RT scan + `processBlock` allocation gate
+- [ ] Preset smoke stable in CI (DawDreamer)
+- [ ] Reconcile roadmap docs with verification artifacts
 
 ## Phase 2 — Plugin #2 scaffold
 
