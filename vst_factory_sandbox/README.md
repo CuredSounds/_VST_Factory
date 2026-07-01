@@ -20,6 +20,15 @@ Or: `./tools/run_build.sh`
 ./tools/run_all_gates.sh   # full stack
 ```
 
+Preset smoke tests need **Python 3.12** (dawdreamer has no 3.13 wheels):
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -r tools/requirements-test.txt
+./tools/run_preset_smoke.sh
+```
+
 ## Agent compile feedback
 
 ```bash

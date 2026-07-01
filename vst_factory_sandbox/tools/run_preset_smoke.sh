@@ -6,7 +6,15 @@ SANDBOX_DIR="$(dirname "$SCRIPT_DIR")"
 
 cd "$SANDBOX_DIR"
 
-if ! python3 -c "import pytest" 2>/dev/null; then
+PYTHON="python3"
+VENV_DIR="$SANDBOX_DIR/../.venv/bin"
+if [[ -x "$VENV_DIR/python3.12" ]]; then
+  PYTHON="$VENV_DIR/python3.12"
+elif [[ -x "$VENV_DIR/python" ]]; then
+  PYTHON="$VENV_DIR/python"
+fi
+
+if ! "$PYTHON" -c "import pytest" 2>/dev/null; then
   if [[ "${CI:-}" == "true" ]]; then
     echo "pytest required in CI. Run: pip install -r tools/requirements-test.txt"
     exit 1
@@ -15,7 +23,7 @@ if ! python3 -c "import pytest" 2>/dev/null; then
   exit 0
 fi
 
-if ! python3 -c "import dawdreamer" 2>/dev/null; then
+if ! "$PYTHON" -c "import dawdreamer" 2>/dev/null; then
   if [[ "${CI:-}" == "true" ]]; then
     echo "dawdreamer required in CI but not installed."
     exit 1
@@ -24,5 +32,5 @@ if ! python3 -c "import dawdreamer" 2>/dev/null; then
   exit 0
 fi
 
-python3 -m pytest Tests/PresetSmokeTests/ -v
+"$PYTHON" -m pytest Tests/PresetSmokeTests/ -v
 echo "Preset smoke tests passed."

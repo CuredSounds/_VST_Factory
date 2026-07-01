@@ -1,3 +1,5 @@
+# Preset smoke tests (Layer B). Requires Python 3.12 — dawdreamer has no cp313 wheels yet.
+# Local: python3.12 -m venv .venv && source .venv/bin/activate && pip install -r tools/requirements-test.txt
 pytest>=8.0
 PyYAML>=6.0
 numpy>=1.24
