@@ -1,5 +1,8 @@
 # Greenfield checklist — JUCE audio plugin
 
+> **Active template:** implement in [`vst_factory_sandbox/`](vst_factory_sandbox/) first, then fork for plugin #2.
+> Canonical factory spec: [`_VST_Factory_Claude_docs/02_ARCHITECTURE_STANDARDS.md`](_VST_Factory_Claude_docs/02_ARCHITECTURE_STANDARDS.md) §6.
+
 Use on **day 1** of a new instrument or effect project. Copy relevant sections into the new repo's `PROJECT_STANDARDS.md`.
 
 ---

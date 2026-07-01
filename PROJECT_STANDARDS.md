@@ -1,5 +1,8 @@
 # Project Standard Operating Procedures (SOP)
 
+> **Reference only.** This file documents the **Softsyn1** case study. Active harness work lives in
+> [`vst_factory_sandbox/`](vst_factory_sandbox/) and [`_VST_Factory_Claude_docs/`](_VST_Factory_Claude_docs/).
+
 Single source of truth for **Softysn1 / Bio-Synth** project structure, documentation, and development workflow. All contributors and AI assistants follow these standards.
 
 ---

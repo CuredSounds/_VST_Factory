@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Agent-facing compile wrapper — uses CMake presets and emits compile_errors.json."""
+"""Agent-facing compile wrapper — delegates to run_build.sh and emits compile_errors.json."""
 
 import json
 import os
@@ -7,7 +7,7 @@ import re
 import subprocess
 import sys
 
-PRESET = os.environ.get("VST_FACTORY_PRESET", "dev")
+PRESET = os.environ.get("VST_FACTORY_PRESET", "ci")
 
 
 def sandbox_dir() -> str:
@@ -17,34 +17,42 @@ def sandbox_dir() -> str:
 def run_build() -> bool:
     root = sandbox_dir()
     errors_file = os.path.join(root, "compile_errors.json")
+    run_build_sh = os.path.join(root, "tools", "run_build.sh")
 
     if os.path.exists(errors_file):
         os.remove(errors_file)
 
-    configure = subprocess.run(
+    env = os.environ.copy()
+    env["VST_FACTORY_PRESET"] = PRESET
+
+    if os.path.isfile(run_build_sh):
+        result = subprocess.run(
+            [run_build_sh],
+            cwd=root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            env=env,
+        )
+        if result.returncode == 0:
+            print(result.stdout)
+            print("Compilation succeeded!")
+            return True
+        print(result.stdout)
+        parse_and_write_errors(result.stdout, errors_file)
+        return False
+
+    # Fallback if script missing
+    for cmd in (
         ["cmake", "--preset", PRESET],
-        cwd=root,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-    if configure.returncode != 0:
-        print("CMake configure failed!")
-        parse_and_write_errors(configure.stderr, errors_file)
-        return False
-
-    build = subprocess.run(
-        ["cmake", "--build", f"--preset", PRESET],
-        cwd=root,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-    if build.returncode != 0:
-        print("Compilation failed!")
-        parse_and_write_errors(build.stdout + "\n" + build.stderr, errors_file)
-        return False
-
+        ["cmake", "--build", "--preset", PRESET],
+    ):
+        result = subprocess.run(
+            cmd, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+        )
+        if result.returncode != 0:
+            parse_and_write_errors(result.stdout, errors_file)
+            return False
     print("Compilation succeeded!")
     return True
 
@@ -74,7 +82,7 @@ def parse_and_write_errors(raw_output: str, target_json_path: str) -> None:
                 "line": 0,
                 "column": 0,
                 "type": "error",
-                "message": "Raw compile output: " + raw_output.strip(),
+                "message": "Raw compile output: " + raw_output.strip()[-4000:],
             }
         )
 

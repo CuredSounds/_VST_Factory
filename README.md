@@ -1,5 +1,7 @@
 # _VST_Factory
 
+[![Sandbox CI](https://github.com/CuredSounds/_VST_Factory/actions/workflows/sandbox-ci.yml/badge.svg)](https://github.com/CuredSounds/_VST_Factory/actions/workflows/sandbox-ci.yml)
+
 Agentic engineering ecosystem for building VST/AU audio plugins under the **Factory Model**
 (specifications, agents, tests, feedback loops, guardrails).
 

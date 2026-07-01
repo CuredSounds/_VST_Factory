@@ -1,5 +1,7 @@
 # Changelog
 
+> **Reference only.** Softsyn1 history. Sandbox harness changes: [`vst_factory_sandbox/CHANGELOG.md`](vst_factory_sandbox/CHANGELOG.md).
+
 All notable changes to **Softysn1 / Bio-Synth**. Format: `[YYYY-MM-DD] Name: summary`.
 
 ---

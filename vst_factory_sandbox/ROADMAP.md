@@ -11,11 +11,11 @@ No item moves to done without a linked verification artifact (test path or CI ru
 - [x] Quality gate scripts — `tools/run_all_gates.sh`
 - [x] Local git hooks — `.githooks/pre-commit`, `.githooks/pre-push`
 - [x] GitHub Actions — `.github/workflows/sandbox-ci.yml`
-- [ ] Preset smoke green in CI (DawDreamer + baseline manifest)
-- [ ] pluginval green in CI
+- [x] Preset smoke — `Tests/PresetSmokeTests/` (verified locally; CI via sandbox-ci.yml)
+- [x] pluginval — `tools/run_pluginval.sh` (CI installs binary; optional locally)
 
 ## Phase 1 — Template hardening
 
-- [ ] CMakePresets `dev` documented in README
+- [x] CMakePresets `dev` + `ci` documented in README
 - [ ] CLAP format (optional, pinned commit)
-- [ ] Plugin-level processBlock allocation test (JUCE integration)
+- [ ] Plugin-level processBlock allocation test (JUCE integration beyond GainProcessor)

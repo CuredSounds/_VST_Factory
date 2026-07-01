@@ -5,11 +5,14 @@ Reference gain/bypass effect plugin — the harness proving ground for _VST_Fact
 ## Build
 
 ```bash
-cmake --preset ci
+cmake --preset ci          # Release + tests (CI)
 cmake --build --preset ci
+
+cmake --preset dev         # Debug (local iteration)
+cmake --build --preset dev
 ```
 
-Or: `./tools/run_build.sh`
+Or: `./tools/run_build.sh` (uses `ci` preset; override with `VST_FACTORY_PRESET=dev`)
 
 ## Tests
 

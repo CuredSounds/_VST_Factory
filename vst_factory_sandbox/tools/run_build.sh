@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SANDBOX_DIR="$(dirname "$SCRIPT_DIR")"
+PRESET="${VST_FACTORY_PRESET:-ci}"
 
 cd "$SANDBOX_DIR"
 
@@ -11,7 +12,7 @@ if ! command -v ninja >/dev/null 2>&1; then
   exit 1
 fi
 
-cmake --preset ci
-cmake --build --preset ci
+cmake --preset "$PRESET"
+cmake --build --preset "$PRESET"
 
-echo "Build succeeded (ci preset)."
+echo "Build succeeded ($PRESET preset)."
