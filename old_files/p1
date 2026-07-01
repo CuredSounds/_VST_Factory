@@ -1,0 +1,53 @@
+GOAL
+Add a dedicated filter envelope (a second ADSR) to each voice that modulates the filter cutoff
+frequency. This is independent of the existing amplitude ADSR.
+
+FILES TO EDIT
+- Source/PluginProcessor.cpp  (createParameterLayout + processBlock)
+- Source/SynthVoice.h         (new members + updateParameters signature)
+- Source/SynthVoice.cpp       (envelope setup, modulation math, render)
+- Source/PluginEditor.h       (new sliders + attachments)
+- Source/PluginEditor.cpp     (configure sliders + attachments + layout)
+
+NEW PARAMETERS (add to createParameterLayout, copy the style of the existing ATTACK/DECAY params)
+- "FILTER_ENV_ATTACK"  "Filter Env Attack"  range 0.001..5.0  skew 0.4  default 0.02
+- "FILTER_ENV_DECAY"   "Filter Env Decay"   range 0.001..5.0  skew 0.4  default 0.20
+- "FILTER_ENV_SUSTAIN" "Filter Env Sustain" range 0.0..1.0    default 0.50
+- "FILTER_ENV_RELEASE" "Filter Env Release" range 0.001..8.0  skew 0.4  default 0.40
+- "FILTER_ENV_AMOUNT"  "Filter Env Amount"  range -1.0..1.0   default 0.0   (bipolar)
+
+IMPLEMENTATION
+1. In SynthVoice.h add:
+     juce::ADSR filterEnv;
+     juce::ADSR::Parameters filterEnvParams;
+     float filterEnvAmount = 0.0f;
+     float baseCutoffHz = 18000.0f;   // cutoff before envelope modulation
+2. Extend updateParameters(...) with 5 new trailing args:
+     float filterEnvAttack, float filterEnvDecay, float filterEnvSustain,
+     float filterEnvRelease, float filterEnvAmount
+   Update the declaration in SynthVoice.h, the definition in SynthVoice.cpp, and the single
+   call site in PluginProcessor::processBlock so they all match.
+3. In updateParameters(): store baseCutoffHz = clampedCutoff; store filterEnvAmount; set
+   filterEnvParams and call filterEnv.setParameters(filterEnvParams). Do NOT call
+   filter.setCutoffFrequency here for the modulated value - cutoff is now applied per-block in render.
+4. In startNote(): call filterEnv.noteOn(). In stopNote(): call filterEnv.noteOff().
+5. In prepareToPlay(): filterEnv.setSampleRate(sampleRate) and set sensible default params.
+6. In renderNextBlock(): before processing the filter, compute the modulated cutoff for this block:
+     const float envValue = filterEnv.getNextSample();   // 0..1, advances the env
+     // map bipolar amount to a multiplicative range, e.g. 5 octaves up/down:
+     const float octaves = filterEnvAmount * 5.0f * envValue;
+     const float modCutoff = juce::jlimit (20.0f, 20000.0f, baseCutoffHz * std::pow (2.0f, octaves));
+     filter.setCutoffFrequency (modCutoff);
+     ladderFilter.setCutoffFrequencyHz (modCutoff);
+   NOTE: getNextSample() advances one sample; for block-rate modulation that is acceptable here,
+   but call it once per block (not per sample) to keep it cheap, OR advance it in the per-sample
+   loop if you prefer sample-accurate behaviour. Block-rate is fine for v1.
+
+EDITOR
+Add 5 rotary sliders ("F.Atk","F.Dec","F.Sus","F.Rel","F.Env") with SliderAttachments to the new
+parameter IDs, following the exact pattern already used for ATTACK/DECAY/etc. Update resized() so
+they get bounds (increase the window width or add a second row of sliders as needed).
+
+VERIFY
+Build clean. With FILTER_ENV_AMOUNT > 0, a held note should open the filter on attack and settle to
+the sustain level; with amount < 0 it should close. Amount = 0 must sound identical to the current build.

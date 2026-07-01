@@ -1,0 +1,1 @@
+Hi, I want to us to build a software super syhthesizer VST3 instrument. I want it to be a hybrid synth similiar to , UVI Falcon, Omnisphere, and Avenger. Let's plan this project out and build the supporting documentation and roadmap and a todo list of features. What are your thoughts?
