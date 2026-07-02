@@ -54,9 +54,9 @@ Softsyn1 stabilization backlog (not harness blockers — see `06_ROADMAP.md` Pha
 
 - [x] CLI scaffold from sandbox fork — `tools/scaffold_plugin.py`
 - [x] Sandbox plugin-level `processBlock` allocation test — `vst_factory_sandbox/Tests/DSP_Tests/ProcessorIntegration_test.cpp`
-- [x] Second plugin: effects processor — [`_vst_tape_saturator`](../_vst_tape_saturator) (Tape Saturator, local repo)
+- [x] Second plugin: effects processor — [CuredSounds/_vst_tape_saturator](https://github.com/CuredSounds/_vst_tape_saturator)
+- [x] GitHub CI for `_vst_tape_saturator` — `.github/workflows/tape-saturator-ci.yml`
 - [ ] CLAP format in sandbox (optional, pinned commit)
-- [ ] GitHub CI for `_vst_tape_saturator`
 
 ```bash
 python3 tools/scaffold_plugin.py --name "My Effect" --out ../my_effect
