@@ -25,19 +25,38 @@ Tracks harness implementation in this repo. Full ecosystem vision: `_VST_Factory
 
 Verification: `vst_factory_sandbox/tools/run_all_gates.sh` (local); CI badge on README.
 
-## Phase 1 — Softsyn1 trial
+## Phase 1 — Softsyn1 trial — harness complete
 
 Branch: [`try_vst_factory`](https://github.com/CuredSounds/_vst_softysn1/tree/try_vst_factory) on
 [github.com/CuredSounds/_vst_softysn1](https://github.com/CuredSounds/_vst_softysn1)
 
 - [x] Harness ported (`AGENTS.md`, `tools/run_all_gates.sh`, CI workflow)
 - [x] Build + Catch2 pass locally on `try_vst_factory`
-- [ ] Fix convergent RT-safety findings (2026-06-29 reviews)
-- [ ] Enable strict RT scan + `processBlock` allocation gate
-- [ ] Preset smoke stable in CI (DawDreamer)
-- [ ] Reconcile roadmap docs with verification artifacts
+- [x] Fix convergent RT-safety P0 findings (string param lookups, `std::async` removal, warm re-open double-free)
+- [x] Enable strict RT scan + `processBlock` allocation gate in CI
+- [x] Preset smoke stable in CI (in-process Catch2; DawDreamer optional)
+- [x] Reconcile roadmap docs with verification artifacts (this file + Softsyn1 `docs/VST_FACTORY_HARNESS.md`)
 
-## Phase 2 — Plugin #2 scaffold
+Verification artifacts:
 
-- [ ] CLI/template repo from sandbox fork
-- [ ] Second plugin: effects processor
+- RT scan enforced: `SOFTYSN1_RT_SCAN_ENFORCE=true` in `.github/workflows/softysn1-ci.yml`
+- Allocation + preset smoke: `Tests/DSP_Tests/ProcessorIntegration_test.cpp` (`[rt][allocation]`, `[preset][smoke]`)
+- pluginval strictness 8: CI run [28618778910](https://github.com/CuredSounds/_vst_softysn1/actions/runs/28618778910) (quality-gates ✓)
+- Warm re-open fix: [PR #5](https://github.com/CuredSounds/_vst_softysn1/pull/5) (`PartSynthSound::Ptr` ownership)
+
+Softsyn1 stabilization backlog (not harness blockers — see `06_ROADMAP.md` Phase 1):
+
+- [ ] QA listening pass for factory presets
+- [ ] Lua script host sandbox hardening
+- [ ] CLAP dependency pinned to commit hash
+
+## Phase 2 — Plugin #2 scaffold — in progress
+
+- [x] CLI scaffold from sandbox fork — `tools/scaffold_plugin.py`
+- [x] Sandbox plugin-level `processBlock` allocation test — `vst_factory_sandbox/Tests/DSP_Tests/ProcessorIntegration_test.cpp`
+- [ ] Second plugin: effects processor (first real product repo from scaffold)
+- [ ] CLAP format in sandbox (optional, pinned commit)
+
+```bash
+python3 tools/scaffold_plugin.py --name "My Effect" --out ../my_effect
+```

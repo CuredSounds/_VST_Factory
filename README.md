@@ -55,6 +55,16 @@ Local clone (if present): `../_CLion VST/_0_working_dir/_vst_softysn1`
 
 ## Starting plugin #2
 
+```bash
+python3 tools/scaffold_plugin.py --name "My Effect" --company SonicDesign --out ../my_effect
+cd ../my_effect
+git config core.hooksPath .githooks
+cmake --preset ci && cmake --build --preset ci
+./tools/run_all_gates.sh
+```
+
+Manual path (same result):
+
 1. Fork/copy `vst_factory_sandbox/` structure.
 2. Fill in `AGENTS.md` from `01_AGENTS_TEMPLATE.md`.
 3. Wire CI using the same `tools/run_all_gates.sh` pattern.

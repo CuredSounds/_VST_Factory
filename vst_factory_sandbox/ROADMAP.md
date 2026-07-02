@@ -17,5 +17,5 @@ No item moves to done without a linked verification artifact (test path or CI ru
 ## Phase 1 — Template hardening
 
 - [x] CMakePresets `dev` + `ci` documented in README
+- [x] Plugin-level processBlock allocation test — `Tests/DSP_Tests/ProcessorIntegration_test.cpp` (`[integration]`)
 - [ ] CLAP format (optional, pinned commit)
-- [ ] Plugin-level processBlock allocation test (JUCE integration beyond GainProcessor)

@@ -73,22 +73,39 @@ if(BUILD_TESTS)
         Tests/DSP_Tests/GainProcessorTests.cpp
         Tests/DSP_Tests/NullTest.cpp
         Tests/DSP_Tests/AllocationTest.cpp
+        Tests/DSP_Tests/ProcessorIntegration_test.cpp
         Tests/Helpers/AllocationCounter.cpp
+        Source/Core/PluginProcessor.cpp
+        Source/UI/PluginEditor.cpp
     )
 
     target_include_directories(DSP_Tests PRIVATE Source Tests)
+
+    target_compile_definitions(DSP_Tests
+        PRIVATE
+            JUCE_WEB_BROWSER=0
+            JUCE_USE_CURL=0
+            JUCE_VST3_CAN_REPLACE_VST2=0
+            JUCE_STANDALONE_APPLICATION=1
+    )
 
     target_link_libraries(DSP_Tests
         PRIVATE
             vst_factory_dsp
             Catch2::Catch2WithMain
+            juce::juce_audio_utils
+            juce::juce_audio_processors
+            juce::juce_gui_extra
     )
 
     set_source_files_properties(
         Tests/DSP_Tests/GainProcessorTests.cpp
         Tests/DSP_Tests/NullTest.cpp
         Tests/DSP_Tests/AllocationTest.cpp
+        Tests/DSP_Tests/ProcessorIntegration_test.cpp
         Tests/Helpers/AllocationCounter.cpp
+        Source/Core/PluginProcessor.cpp
+        Source/UI/PluginEditor.cpp
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
     )
 
