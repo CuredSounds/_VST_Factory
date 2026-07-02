@@ -32,11 +32,12 @@ jobs:
 
       - name: Install pluginval
         run: |
-          PLUGINVAL_VERSION="1.0.3"
-          curl -L "https://github.com/Tracktion/pluginval/releases/download/${PLUGINVAL_VERSION}/pluginval_macOS.zip" -o pluginval.zip
+          PLUGINVAL_VERSION="v1.0.4"
+          curl -fsSL "https://github.com/Tracktion/pluginval/releases/download/${PLUGINVAL_VERSION}/pluginval_macOS.zip" -o pluginval.zip
+          unzip -tq pluginval.zip
           unzip -q pluginval.zip
-          chmod +x pluginval
-          sudo mv pluginval /usr/local/bin/pluginval
+          sudo install -m 755 pluginval.app/Contents/MacOS/pluginval /usr/local/bin/pluginval
+          pluginval --version
 
       - name: Run all quality gates
         env:
